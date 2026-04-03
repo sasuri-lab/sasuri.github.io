@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Hub - Strategie di Investimento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.5);
+            padding: 2rem;
+        }
+
+        header .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        header .subtitle {
+            color: #94a3b8;
+        }
+
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        section h2 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        section h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .portfolio-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .portfolio-card:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(71, 85, 105, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .portfolio-card.active {
+            transform: scale(1.05);
+            border: 2px solid #f59e0b;
+        }
+
+        .portfolio-card.active.bg-blue {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+
+        .portfolio-card.active.bg-green {
+            background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+        }
+
+        .portfolio-card.active.bg-red {
+            background: linear-gradient(135deg, #dc2626 0%, #92400e 100%);
+        }
+
+        .portfolio-card.active.bg-purple {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        }
+
+        .portfolio-card.active.bg-cyan {
+            background: linear-gradient(135deg, #0891b2 0%, #1e40af 100%);
+        }
+
+        .portfolio-card h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .portfolio-card p {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .portfolio-card .icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 2.5rem;
+            opacity: 0.2;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .risk-low {
+            color: #16a34a;
+            background: rgba(22, 163, 74, 0.1);
+        }
+
+        .risk-moderate {
+            color: #eab308;
+            background: rgba(234, 179, 8, 0.1);
+        }
+
+        .risk-medium-high {
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .risk-high {
+            color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .metric {
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            color: #e2e8f0;
+        }
+
+        .metric strong {
+            color: #f59e0b;
+        }
+
+        .detail-view {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 3rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .metric-card.green {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .metric-card.blue {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .metric-card label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .metric-card.green .value {
+            color: #22c55e;
+        }
+
+        .metric-card.blue .value {
+            color: #3b82f6;
+        }
+
+        .allocation-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .allocation-section h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .allocation-item {
+            margin-bottom: 1.25rem;
+        }
+
+        .allocation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .allocation-header span {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .allocation-header .percent {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #f97316);
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+
+        .stats-sidebar {
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .stat-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 0.25rem;
+        }
+
+        .stat-value.green { color: #22c55e; }
+        .stat-value.orange { color: #f97316; }
+        .stat-value.blue { color: #3b82f6; }
+
+        .compare-btn {
+            width: 100%;
+            background: #f59e0b;
+            color: #000;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .compare-btn:hover {
+            background: #d97706;
+        }
+
+        .comparison-view {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 3rem;
+        }
+
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .comparison-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .select-btn {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            background: rgba(71, 85, 105, 0.3);
+            color: #94a3b8;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background: rgba(71, 85, 105, 0.5);
+        }
+
+        .select-btn.active {
+            color: #fff;
+            border: 2px solid #f59e0b;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .comparison-table thead {
+            border-bottom: 1px solid rgba(71, 85, 105, 0.5);
+        }
+
+        .comparison-table th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .comparison-table .metric-name {
+            color: #94a3b8;
+        }
+
+        .comparison-table .value {
+            font-weight: 600;
+            color: #f59e0b;
+        }
+
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .matrix-card {
+            background: rgba(71, 85, 105, 0.3);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .matrix-card:hover {
+            background: rgba(71, 85, 105, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .matrix-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .matrix-card .icon {
+            font-size: 1.5rem;
+        }
+
+        .rating-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .rating-row span {
+            color: #94a3b8;
+        }
+
+        .dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: rgba(71, 85, 105, 0.5);
+        }
+
+        .dot.active-orange {
+            background: #f97316;
+        }
+
+        .dot.active-green {
+            background: #22c55e;
+        }
+
+        footer {
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.5);
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .emoji {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><span class="emoji">📈</span>Portfolio Hub</h1>
+            <p class="subtitle">Strategie di investimento personalizzate per il tuo futuro finanziario</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- Portfolio Cards Section -->
+        <section>
+            <h2>I Nostri Portfolio</h2>
+            <div class="portfolio-grid" id="portfolioGrid"></div>
+        </section>
+
+        <!-- Detail View -->
+        <section id="detailSection" class="hidden">
+            <div class="detail-view">
+                <h3 id="detailTitle" class="detail-title"></h3>
+                <div class="detail-grid">
+                    <div>
+                        <!-- Investment Calculator -->
+                        <div class="input-group">
+                            <label for="investmentAmount">Importo da investire (€)</label>
+                            <input type="number" id="investmentAmount" value="100000">
+                        </div>
+
+                        <!-- Metrics -->
+                        <div class="metrics-row">
+                            <div class="metric-card green">
+                                <label>Rendimento Annuale</label>
+                                <div class="value" id="annualReturn">€0</div>
+                            </div>
+                            <div class="metric-card blue">
+                                <label>Valore Totale (anno 1)</label>
+                                <div class="value" id="totalValue">€0</div>
+                            </div>
+                        </div>
+
+                        <!-- Allocation -->
+                        <div class="allocation-section">
+                            <h4>Allocazione degli Asset</h4>
+                            <div id="allocationList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Stats -->
+                    <div class="stats-sidebar">
+                        <h4>Caratteristiche</h4>
+                        <div class="stat-item">
+                            <div class="stat-label">Livello di Rischio</div>
+                            <div class="stat-value" id="riskLevel"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Rendimento Atteso</div>
+                            <div class="stat-value green" id="expectedReturn"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Volatilità</div>
+                            <div class="stat-value orange" id="volatility"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Asset Diversi</div>
+                            <div class="stat-value blue" id="assetCount"></div>
+                        </div>
+                        <button class="compare-btn" onclick="showComparison()">Confronta con altri</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison View -->
+        <section id="comparisonSection" class="hidden">
+            <div class="comparison-view">
+                <div class="comparison-header">
+                    <h3>Confronto Portfolio</h3>
+                    <button class="close-btn" onclick="hideComparison()">✕</button>
+                </div>
+
+                <div class="comparison-selector" id="comparisonSelector"></div>
+
+                <table class="comparison-table" id="comparisonTable">
+                    <thead>
+                        <tr id="comparisonTableHead"></tr>
+                    </thead>
+                    <tbody id="comparisonTableBody"></tbody>
+                </table>
+                <div id="noComparison" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                    Seleziona almeno un portfolio per il confronto
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk/Return Matrix -->
+        <section>
+            <h3>Mappa Rischio-Rendimento</h3>
+            <div class="risk-matrix" id="riskMatrix"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Portfolio Hub © 2024</p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">Disclaimer: Questo non è un consiglio finanziario. Consulta un professionista prima di investire.</p>
+    </footer>
+
+    <script>
+        const portfolios = [
+            {
+                id: 1,
+                name: 'Conservatore',
+                description: 'Ideale per risparmiatori prudenti',
+                color: 'blue',
+                icon: '🛡️',
+                riskLevel: 'Basso',
+                expectedReturn: 4.8,
+                volatility: 8.5,
+                allocation: [
+                    { symbol: 'BND', name: 'Obbligazioni Vanguard', percent: 40 },
+                    { symbol: 'TLT', name: 'Treasuries 20Y', percent: 20 },
+                    { symbol: 'NESN', name: 'Nestlé SA', percent: 15 },
+                    { symbol: 'GLD', name: 'Oro', percent: 15 },
+                    { symbol: 'VTI', name: 'ETF Indici USA', percent: 10 },
+                ],
+            },
+            {
+                id: 2,
+                name: 'Moderato',
+                description: 'Equilibrio tra rischio e rendimento',
+                color: 'green',
+                icon: '⚖️',
+                riskLevel: 'Moderato',
+                expectedReturn: 8.5,
+                volatility: 14.2,
+                allocation: [
+                    { symbol: 'VTI', name: 'ETF Indici USA', percent: 25 },
+                    { symbol: 'VTIAX', name: 'ETF Indici Intl', percent: 20 },
+                    { symbol: 'MSFT', name: 'Microsoft', percent: 10 },
+                    { symbol: 'NESN', name: 'Nestlé SA', percent: 10 },
+                    { symbol: 'BND', name: 'Obbligazioni', percent: 20 },
+                    { symbol: 'GLD', name: 'Oro', percent: 10 },
+                    { symbol: 'REIT', name: 'Immobiliare', percent: 5 },
+                ],
+            },
+            {
+                id: 3,
+                name: 'Aggressivo',
+                description: 'Massimo potenziale di crescita',
+                color: 'red',
+                icon: '🚀',
+                riskLevel: 'Alto',
+                expectedReturn: 13.2,
+                volatility: 22.1,
+                allocation: [
+                    { symbol: 'TSLA', name: 'Tesla Inc', percent: 15 },
+                    { symbol: 'MSFT', name: 'Microsoft', percent: 15 },
+                    { symbol: 'AAPL', name: 'Apple Inc', percent: 12 },
+                    { symbol: 'AMZN', name: 'Amazon', percent: 12 },
+                    { symbol: 'VTI', name: 'ETF Indici USA', percent: 20 },
+                    { symbol: 'VTIAX', name: 'ETF Indici Intl', percent: 15 },
+                    { symbol: 'LVMH', name: 'LVMH', percent: 8 },
+                    { symbol: 'GLD', name: 'Oro', percent: 3 },
+                ],
+            },
+            {
+                id: 4,
+                name: 'Pensionistico',
+                description: 'Reddito stabile e prevedibile',
+                color: 'purple',
+                icon: '🏛️',
+                riskLevel: 'Basso',
+                expectedReturn: 5.2,
+                volatility: 10.1,
+                allocation: [
+                    { symbol: 'BND', name: 'Obbligazioni', percent: 35 },
+                    { symbol: 'TLT', name: 'Treasuries', percent: 20 },
+                    { symbol: 'REIT', name: 'Immobiliare', percent: 15 },
+                    { symbol: 'NESN', name: 'Nestlé SA', percent: 15 },
+                    { symbol: 'VTI', name: 'ETF USA', percent: 10 },
+                    { symbol: 'GLD', name: 'Oro', percent: 5 },
+                ],
+            },
+            {
+                id: 5,
+                name: 'Growth',
+                description: 'Crescita a lungo termine',
+                color: 'cyan',
+                icon: '📈',
+                riskLevel: 'Medio-Alto',
+                expectedReturn: 11.8,
+                volatility: 19.5,
+                allocation: [
+                    { symbol: 'TSLA', name: 'Tesla Inc', percent: 12 },
+                    { symbol: 'AAPL', name: 'Apple Inc', percent: 11 },
+                    { symbol: 'MSFT', name: 'Microsoft', percent: 11 },
+                    { symbol: 'AMZN', name: 'Amazon', percent: 10 },
+                    { symbol: 'LVMH', name: 'LVMH', percent: 8 },
+                    { symbol: 'VTI', name: 'ETF USA', percent: 22 },
+                    { symbol: 'VTIAX', name: 'ETF Intl', percent: 18 },
+                    { symbol: 'REIT', name: 'REIT', percent: 5 },
+                    { symbol: 'GLD', name: 'Oro', percent: 3 },
+                ],
+            },
+        ];
+
+        let selectedPortfolio = null;
+        let selectedCompare = [];
+
+        function getRiskClass(level) {
+            switch(level) {
+                case 'Basso': return 'risk-low';
+                case 'Moderato': return 'risk-moderate';
+                case 'Medio-Alto': return 'risk-medium-high';
+                case 'Alto': return 'risk-high';
+                default: return 'risk-low';
+            }
+        }
+
+        function initPortfolioGrid() {
+            const grid = document.getElementById('portfolioGrid');
+            grid.innerHTML = portfolios.map(p => `
+                <div class="portfolio-card ${p.color === 'blue' ? 'bg-blue' : ''} ${p.color === 'green' ? 'bg-green' : ''} ${p.color === 'red' ? 'bg-red' : ''} ${p.color === 'purple' ? 'bg-purple' : ''} ${p.color === 'cyan' ? 'bg-cyan' : ''}" onclick="selectPortfolio(${p.id})">
+                    <div class="icon">${p.icon}</div>
+                    <h3>${p.name}</h3>
+                    <p>${p.description}</p>
+                    <div class="risk-badge ${getRiskClass(p.riskLevel)}">Rischio: ${p.riskLevel}</div>
+                    <div class="metric"><strong>Rendimento atteso:</strong> ${p.expectedReturn}%</div>
+                </div>
+            `).join('');
+        }
+
+        function selectPortfolio(id) {
+            if (selectedPortfolio === id) {
+                selectedPortfolio = null;
+                document.getElementById('detailSection').classList.add('hidden');
+                document.getElementById('comparisonSection').classList.add('hidden');
+                updatePortfolioCards();
+            } else {
+                selectedPortfolio = id;
+                updatePortfolioCards();
+                updateDetailView();
+                document.getElementById('detailSection').classList.remove('hidden');
+                document.getElementById('comparisonSection').classList.add('hidden');
+            }
+        }
+
+        function updatePortfolioCards() {
+            const cards = document.querySelectorAll('.portfolio-card');
+            cards.forEach((card, idx) => {
+                if (portfolios[idx].id === selectedPortfolio) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        }
+
+        function updateDetailView() {
+            const portfolio = portfolios.find(p => p.id === selectedPortfolio);
+            if (!portfolio) return;
+
+            document.getElementById('detailTitle').textContent = portfolio.name;
+            document.getElementById('riskLevel').textContent = portfolio.riskLevel;
+            document.getElementById('riskLevel').className = 'stat-value ' + getRiskClass(portfolio.riskLevel);
+            document.getElementById('expectedReturn').textContent = portfolio.expectedReturn + '%';
+            document.getElementById('volatility').textContent = portfolio.volatility + '%';
+            document.getElementById('assetCount').textContent = portfolio.allocation.length + ' asset';
+
+            const allocationList = document.getElementById('allocationList');
+            allocationList.innerHTML = portfolio.allocation.map(asset => `
+                <div class="allocation-item">
+                    <div class="allocation-header">
+                        <span>${asset.name}</span>
+                        <span class="percent">${asset.percent}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${asset.percent}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            const amount = parseFloat(document.getElementById('investmentAmount').value) || 100000;
+            const portfolio = portfolios.find(p => p.id === selectedPortfolio);
+            if (!portfolio) return;
+
+            const annualReturn = (amount * portfolio.expectedReturn) / 100;
+            const totalValue = amount + annualReturn;
+
+            document.getElementById('annualReturn').textContent = '€' + annualReturn.toLocaleString('it-IT', {maximumFractionDigits: 0});
+            document.getElementById('totalValue').textContent = '€' + totalValue.toLocaleString('it-IT', {maximumFractionDigits: 0});
+        }
+
+        function showComparison() {
+            selectedCompare = [];
+            document.getElementById('comparisonSection').classList.remove('hidden');
+            updateComparisonSelector();
+        }
+
+        function hideComparison() {
+            document.getElementById('comparisonSection').classList.add('hidden');
+            selectedCompare = [];
+        }
+
+        function updateComparisonSelector() {
+            const selector = document.getElementById('comparisonSelector');
+            selector.innerHTML = portfolios.map(p => `
+                <button class="select-btn ${selectedCompare.includes(p.id) ? 'active' : ''}" onclick="toggleCompare(${p.id})">${p.name}</button>
+            `).join('');
+            updateComparisonTable();
+        }
+
+        function toggleCompare(id) {
+            if (selectedCompare.includes(id)) {
+                selectedCompare = selectedCompare.filter(x => x !== id);
+            } else {
+                selectedCompare.push(id);
+            }
+            updateComparisonSelector();
+        }
+
+        function updateComparisonTable() {
+            const comparisonData = portfolios.filter(p => selectedCompare.includes(p.id));
+            const head = document.getElementById('comparisonTableHead');
+            const body = document.getElementById('comparisonTableBody');
+
+            if (comparisonData.length === 0) {
+                document.getElementById('noComparison').style.display = 'block';
+                head.innerHTML = '';
+                body.innerHTML = '';
+                return;
+            }
+
+            document.getElementById('noComparison').style.display = 'none';
+
+            head.innerHTML = '<th>Metrica</th>' + comparisonData.map(p => `<th>${p.name}</th>`).join('');
+
+            const metrics = [
+                { label: 'Rischio', getter: p => p.riskLevel },
+                { label: 'Rendimento Atteso', getter: p => p.expectedReturn + '%' },
+                { label: 'Volatilità', getter: p => p.volatility + '%' },
+                { label: 'Diversificazione', getter: p => p.allocation.length + ' asset' },
+            ];
+
+            body.innerHTML = metrics.map(metric => `
+                <tr>
+                    <td class="metric-name">${metric.label}</td>
+                    ${comparisonData.map(p => `<td class="value">${metric.getter(p)}</td>`).join('')}
+                </tr>
+            `).join('');
+        }
+
+        function initRiskMatrix() {
+            const matrix = document.getElementById('riskMatrix');
+            matrix.innerHTML = portfolios.map(p => {
+                const riskDots = Math.ceil(p.volatility / 8);
+                const returnDots = Math.ceil(p.expectedReturn / 3.5);
+
+                return `
+                    <div class="matrix-card" onclick="selectPortfolio(${p.id})">
+                        <h4><span class="icon">${p.icon}</span>${p.name}</h4>
+                        <div class="rating-row">
+                            <span>Rischio:</span>
+                            <div class="dots">
+                                ${[1, 2, 3, 4, 5].map(i => `<div class="dot ${i <= riskDots ? 'active-orange' : ''}"></div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="rating-row">
+                            <span>Rendimento:</span>
+                            <div class="dots">
+                                ${[1, 2, 3, 4, 5].map(i => `<div class="dot ${i <= returnDots ? 'active-green' : ''}"></div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('investmentAmount').addEventListener('input', updateMetrics);
+
+        initPortfolioGrid();
+        initRiskMatrix();
+    </script>
+</body>
+</html>
